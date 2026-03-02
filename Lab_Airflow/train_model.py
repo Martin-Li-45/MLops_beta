@@ -9,6 +9,7 @@ import numpy as np
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from mlflow.models import infer_signature
 import joblib
+import os  # <--- ДОБАВЛЕНО
 
 
 def scale_frame(frame):
@@ -46,8 +47,12 @@ def train():
     """
     Основная функция обучения
     """
+    # Получаем путь к папке с текущим файлом
+    dag_folder = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.join(dag_folder, 'df_clear.csv')
+    
     # Загружаем очищенные данные
-    df = pd.read_csv("./df_clear.csv")
+    df = pd.read_csv(file_path)
     
     # Масштабируем данные
     X, Y, power_trans, scaler = scale_frame(df)
@@ -115,7 +120,8 @@ def train():
         mlflow.sklearn.log_model(best, "model", signature=signature)
         
         # Сохраняем модель локально
-        with open("phone_price_model.pkl", "wb") as file:
+        model_path = os.path.join(dag_folder, "phone_price_model.pkl")  # ИСПРАВЛЕНО
+        with open(model_path, "wb") as file:
             joblib.dump({
                 'model': best,
                 'scaler': scaler,
@@ -139,7 +145,8 @@ def train():
             print(coef_df.head(10))
             
             # Сохраняем важность признаков
-            coef_df.to_csv('feature_importance.csv', index=False)
+            importance_path = os.path.join(dag_folder, 'feature_importance.csv')  # ИСПРАВЛЕНО
+            coef_df.to_csv(importance_path, index=False)
 
 if __name__ == "__main__":
     train()

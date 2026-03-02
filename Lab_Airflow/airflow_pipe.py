@@ -17,7 +17,7 @@ from train_model import train
 
 def download_data():
     # Загружаем ваш локальный файл
-    df = pd.read_csv('./ndtv_data_final.csv', delimiter=',')
+    df = pd.read_csv('/home/mint/airflow/dags/ndtv_data_final.csv', delimiter=',')
     # Удаляем ненужный первый столбец (индекс)
     if 'Unnamed: 0' in df.columns:
         df = df.drop(columns=['Unnamed: 0'])
