@@ -37,7 +37,12 @@ def clear_data():
     
     # Удаляем их сразу после загрузки
     df = df.drop(columns=columns_to_drop, errors='ignore')
-    
+
+    df['PPI'] = np.sqrt(df['Resolution x']**2 + df['Resolution y']**2) / df['Screen size (inches)']
+    df['Camera_sum'] = df['Rear camera'] + df['Front camera']
+    df['RAM_GB'] = df['RAM (MB)'] / 1024
+    df['Storage_per_RAM'] = df['Internal storage (GB)'] / df['RAM_GB'].clip(0.5)
+    df['Battery_per_inch'] = df['Battery capacity (mAh)'] / df['Screen size (inches)']
     # Преобразуем Yes/No → 1/0 (до фильтрации)
     for col in binary_columns:
         if col in df.columns:
